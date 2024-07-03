@@ -1,0 +1,21 @@
+services:
+  psql:
+    image: postgres:16-alpine
+    restart: always
+    shm_size: 128mb
+    env_file:
+      - .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  db:
+    driver: local
